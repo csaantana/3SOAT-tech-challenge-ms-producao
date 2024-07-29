@@ -71,6 +71,10 @@ dependencies {
 	implementation 'io.cucumber:cucumber-testng:4.8.1'
 	testImplementation 'io.cucumber:cucumber-junit:7.0.0'
 
+
+//Kafka
+	implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '3.1.1'
+
 }
 
 dependencyManagement {

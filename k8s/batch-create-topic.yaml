@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kafka-cli-create-topic
+  labels:
+    app: kafka-cli
+spec:
+  containers:
+    - name: kafka-cli
+      image: confluentinc/cp-kafka:7.0.1
+      command:
+        - sh
+        - -c
+        - "exec kafka-topics --create --topic fila-pedidos --bootstrap-server kafka-0.kafka.kafka.svc.cluster.local:9092 --replication-factor 1 --partitions 1"
+      resources: {}
+      stdin: true
+      tty: true
+  restartPolicy: Never
+  dnsPolicy: ClusterFirst

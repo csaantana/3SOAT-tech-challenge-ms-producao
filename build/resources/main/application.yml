@@ -13,12 +13,27 @@ springdoc:
   packagesToScan: br.com.tech.challenge.api
 
 spring:
+  kafka:
+    bootstrap-servers: 10.103.227.21:31093
+    admin:
+      properties:
+        request.timeout.ms: 60000
+        retry.backoff.ms: 1000
+        retries: 10
+      fail-fast=false: false
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: grupo-consumidores
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   cloud:
-    openfeign:
+    open-feign:
       client:
         config:
           default:
-            connectTimeout: 5000
+            connectTimeout: 60000
             readTimeout: 50000
             loggerLevel: basic
   data:
