@@ -40,10 +40,8 @@ public class PedidoController {
             @ApiResponse(responseCode = "500", description = "Ocorreu um erro no servidor.")
     })
     @GetMapping(value = "/fila")
-    public ResponseEntity<List<FilaPedidosDTO>> listFilaPedidos(
-            @RequestParam(name = "pagina", defaultValue = "0") int pagina,
-            @RequestParam(name = "tamanho", defaultValue = "100") int tamanho) {
-        return ResponseEntity.ok().body(filaPedidosService.listFilaPedidos(pagina, tamanho));
+    public ResponseEntity<List<FilaPedidosDTO>> listFilaPedidos() {
+        return ResponseEntity.ok().body(filaPedidosService.listFilaPedidos());
     }
 
     @Operation(description = "Endpoint para atualizar status de um pedido")

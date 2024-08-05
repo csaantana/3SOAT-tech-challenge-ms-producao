@@ -1,30 +1,36 @@
 package br.com.tech.challenge.ms.producao.servicos;
 
 
-import br.com.tech.challenge.ms.producao.bd.repositorios.FilaPedidosRepository;
-import br.com.tech.challenge.ms.producao.domain.dto.external.FilaPedidosDTO;
-import br.com.tech.challenge.ms.producao.domain.entidades.Pedido;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Slf4j
+@Component
 public class KafkaConsumer {
 
-    @Autowired
-    private FilaPedidosRepository filaPedidosRepository;
+
+    private final FilaPedidosService filaPedidosService;
+
+    public KafkaConsumer(FilaPedidosService filaPedidosService) {
+        this.filaPedidosService = filaPedidosService;
+    }
+
 
     @KafkaListener(topics = "fila-pedidos", groupId = "grupo-pedidos")
-    public void consume(String message) throws JsonProcessingException {
-        // Assumindo que a mensagem é um JSON e que temos uma classe Pedido correspondente
-        Pedido pedido = new ObjectMapper().readValue(message, Pedido.class);
+    public void consume(String idPedido) {
+        log.debug("Mensagem recebida: {}", idPedido);
+        // Tente converter a mensagem manualmente
 
-       FilaPedidosDTO filaPedido = new FilaPedidosDTO();
-       filaPedido.setStatusPedido(pedido.getStatusPedido());
-       filaPedido.setSenhaRetirada(pedido.getSenhaRetirada());
-       filaPedido.setNomeCliente(pedido.getCliente().getNome());
-        filaPedidosRepository.save(filaPedido);
+        try {
+//            Pedido pedido = new ObjectMapper().readValue(message, Pedido.class);
+            log.info("Mensagem recebida no consumer: {}", idPedido);
+
+
+            filaPedidosService.salvaPedido(idPedido);
+
+        } catch (Exception e) {
+            log.error("Erro ao processar a mensagem: {}", e.getMessage());
+        }
     }
 }

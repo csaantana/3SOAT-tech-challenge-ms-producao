@@ -4,6 +4,7 @@ package br.com.tech.challenge.ms.producao.servicos;
 import br.com.tech.challenge.ms.producao.api.client.FilaPedidosClient;
 import br.com.tech.challenge.ms.producao.api.client.PedidosClient;
 import br.com.tech.challenge.ms.producao.bd.repositorios.FilaPedidosRepository;
+import br.com.tech.challenge.ms.producao.domain.dto.PedidoDTO;
 import br.com.tech.challenge.ms.producao.domain.dto.external.FilaPedidosDTO;
 import br.com.tech.challenge.ms.producao.domain.enums.StatusPedido;
 import lombok.RequiredArgsConstructor;
@@ -34,26 +35,24 @@ public class FilaPedidosService {
     private final ModelMapper mapper;
 
 
-    public List<FilaPedidosDTO> listFilaPedidos(final Integer pagina, final Integer tamanho) {
-        log.info("Listando fila de pedidos com pagina {} e tamanho {}", pagina, tamanho);
+    public List<FilaPedidosDTO> listFilaPedidos() {
+        log.info("Listando fila de pedidos");
 
-        final var pageable = PageRequest.of(pagina, tamanho, Sort.by("dataHora").descending());
+        return filaPedidosRepository.findAll();
+    }
 
-        List<FilaPedidosDTO> listaFilaPedidos = pedidosClient.findAll(pageable).getContent();
 
+    public void salvaPedido(String idPedido){
 
-        List<FilaPedidosDTO> pedidosFiltrados = listaFilaPedidos.stream()
-                .filter(pedido ->
-                        pedido.getStatusPedido().equals(StatusPedido.RECEBIDO) ||
-                                pedido.getStatusPedido().equals(StatusPedido.EM_PREPARACAO) ||
-                                pedido.getStatusPedido().equals(StatusPedido.PRONTO)
-                )
-                .sorted(Comparator.comparing(FilaPedidosDTO::getSenhaRetirada))
-                .collect(Collectors.toList());
+      PedidoDTO pedido = pedidosClient.findById(Long.parseLong(idPedido));
 
-        filaPedidosRepository.saveAll(pedidosFiltrados);
+      FilaPedidosDTO filaPedido = new FilaPedidosDTO();
+      filaPedido.setStatusPedido(pedido.getStatusPedido());
+      filaPedido.setSenhaRetirada(pedido.getSenhaRetirada());
+      filaPedido.setNomeCliente(pedido.getCliente().getNome());
+      filaPedido.setId(pedido.getId().toString());
 
-        return pedidosFiltrados;
+      filaPedidosRepository.save(filaPedido);
     }
 
 }

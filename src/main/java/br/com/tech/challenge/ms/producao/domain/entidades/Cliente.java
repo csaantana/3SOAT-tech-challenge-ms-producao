@@ -3,6 +3,7 @@ package br.com.tech.challenge.ms.producao.domain.entidades;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -24,6 +25,6 @@ public class Cliente {
     private String email;
 
 
-    private Set<Pedido> pedido;
+    private List<Pedido> pedido;
 
 }

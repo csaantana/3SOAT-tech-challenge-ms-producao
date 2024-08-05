@@ -17,17 +17,18 @@ spring:
     bootstrap-servers: kafka-0.kafka.kafka.svc.cluster.local:9092
     admin:
       properties:
+        heartbeat.interval.ms: 200000000  # Exemplo de 2 segundos
+        session.timeout.ms: 30000000  # Exemplo de 30 segundos
         request.timeout.ms: 60000
         retry.backoff.ms: 1000
         retries: 10
       fail-fast=false: false
     producer:
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
-      group-id: grupo-consumidores
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
   cloud:
     open-feign:
       client:
