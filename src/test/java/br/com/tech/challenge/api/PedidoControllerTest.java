@@ -40,13 +40,13 @@ class PedidoControllerTest {
         List<FilaPedidosDTO> filaPedidosDTOList = List.of(
                 new FilaPedidosDTO(), new FilaPedidosDTO()
         );
-        when(filaPedidosService.listFilaPedidos(anyInt(), anyInt())).thenReturn(filaPedidosDTOList);
+        when(filaPedidosService.listFilaPedidos()).thenReturn(filaPedidosDTOList);
 
-        ResponseEntity<List<FilaPedidosDTO>> responseEntity = pedidoController.listFilaPedidos(0, 100);
+        ResponseEntity<List<FilaPedidosDTO>> responseEntity = pedidoController.listFilaPedidos();
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(2, responseEntity.getBody().size());
-        verify(filaPedidosService, times(1)).listFilaPedidos(anyInt(), anyInt());
+        verify(filaPedidosService, times(1)).listFilaPedidos();
     }
 
     @Test

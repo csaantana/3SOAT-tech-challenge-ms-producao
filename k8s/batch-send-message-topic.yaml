@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-message
+data:
+  message.txt: |
+    100
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kafka-cli-send-message
+  labels:
+    app: kafka-cli
+spec:
+  containers:
+    - name: kafka-cli
+      image: confluentinc/cp-kafka:7.0.1
+      volumeMounts:
+        - name: message-volume
+          mountPath: /tmp/message
+      command:
+        - sh
+        - -c
+        - |
+          cat /tmp/message/message.txt | kafka-console-producer --broker-list kafka-0.kafka.kafka.svc.cluster.local:9092 --topic fila-pedidos
+      resources: {}
+      stdin: true
+      tty: true
+  volumes:
+    - name: message-volume
+      configMap:
+        name: kafka-message
+  restartPolicy: Never
+  dnsPolicy: ClusterFirst
